@@ -6,65 +6,98 @@
 </head>
 <body>
     <h1>Organisation du covoiturage - Hockey</h1>
-    <p>Veuillez remplir les informations sur les disponibilités des voitures.</p>
-    <form>
-        Nom du parent : <input type="text" name="parent" id="parent"><br>
-        Numéro de téléphone : <input type="text" name="telephone" id="telephone"><br>
-        Nombre de places disponibles : <input type="number" name="places" id="places"><br>
-        <input type="submit" value="Soumettre">
+    <button onclick="fetchData()">Afficher la liste des joueurs</button>
+    <div id="dataContainer"></div>
+
+    <h2>Ajouter / Modifier un Joueur</h2>
+    <form onsubmit="handleFormSubmit(event)">
+        ID (laisser vide pour ajouter) : <input type="text" id="id"><br>
+        Nom de l'équipe : <input type="text" id="equipe" required><br>
+        Nom du joueur : <input type="text" id="joueur" required><br>
+        Nom du parent : <input type="text" id="parent"><br>
+        Numéro de téléphone : <input type="text" id="telephone"><br>
+        <input type="submit" value="Envoyer">
     </form>
-</body>
 
-<button onclick="fetchData()">Voir la liste des joueurs</button>
-<div id="dataContainer"></div>
+    <h2>Supprimer un Joueur</h2>
+    ID à supprimer : <input type="text" id="deleteId">
+    <button onclick="deleteEntry()">Supprimer</button>
 
-<script>
-    function fetchData() {
-        fetch("VOTRE_SCRIPT_GOOGLE_APPS_URL")
-            .then(response => response.json())
-            .then(data => {
-                let container = document.getElementById("dataContainer");
-                container.innerHTML = "";
-                data.forEach(item => {
-                    container.innerHTML += `
-                        <p>Équipe: ${item.equipe}, Joueur: ${item.joueur}, Parent: ${item.parent}, Téléphone: ${item.telephone}</p>
-                    `;
+    <script>
+        const SCRIPT_URL = "VOTRE_SCRIPT_GOOGLE_APPS_URL";
+
+        function fetchData() {
+            fetch(SCRIPT_URL)
+                .then(response => response.json())
+                .then(data => {
+                    let container = document.getElementById("dataContainer");
+                    container.innerHTML = "";
+                    data.forEach(item => {
+                        container.innerHTML += `
+                            <p>ID: ${item.id}, Équipe: ${item.equipe}, Joueur: ${item.joueur}, Parent: ${item.parent}, Téléphone: ${item.telephone}</p>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error("Erreur :", error);
                 });
-            })
-            .catch(error => {
-                console.error("Erreur :", error);
-            });
-    }
-</script>
-<form onsubmit="submitForm(event)">
-    Nom du parent : <input type="text" name="parent" id="parent"><br>
-    Numéro de téléphone : <input type="text" name="telephone" id="telephone"><br>
-    Nombre de places disponibles : <input type="number" name="places" id="places"><br>
-    Commentaires : <input type="text" name="commentaires" id="commentaires"><br>
-    <input type="submit" value="Soumettre">
-</form>
+        }
 
-<script>
-    function submitForm(event) {
-        event.preventDefault();
+        function handleFormSubmit(event) {
+            event.preventDefault();
 
-        let parent = document.getElementById('parent').value;
-        let telephone = document.getElementById('telephone').value;
-        let places = document.getElementById('places').value;
-        let commentaires = document.getElementById('commentaires').value;
+            let id = document.getElementById("id").value;
+            let equipe = document.getElementById("equipe").value;
+            let joueur = document.getElementById("joueur").value;
+            let parent = document.getElementById("parent").value;
+            let telephone = document.getElementById("telephone").value;
 
-        fetch("VOTRE_SCRIPT_GOOGLE_APPS_URL", {
-            method: "POST",
-            body: JSON.stringify({ parent, telephone, places, commentaires }),
-            headers: {
-                "Content-Type": "application/json"
+            let action = id ? "edit" : "add";
+
+            let formData = new URLSearchParams();
+            formData.append("action", action);
+            if (id) formData.append("id", id);
+            formData.append("equipe", equipe);
+            formData.append("joueur", joueur);
+            formData.append("parent", parent);
+            formData.append("telephone", telephone);
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: formData
+            }).then(response => response.text())
+              .then(data => {
+                  alert("Action réalisée avec succès !");
+                  fetchData(); // Rafraîchir les données
+              })
+              .catch(error => {
+                  console.error("Erreur :", error);
+              });
+        }
+
+        function deleteEntry() {
+            let id = document.getElementById("deleteId").value;
+
+            if (id) {
+                let formData = new URLSearchParams();
+                formData.append("action", "delete");
+                formData.append("id", id);
+
+                fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: formData
+                }).then(response => response.text())
+                  .then(data => {
+                      alert("Suppression réussie !");
+                      fetchData(); // Rafraîchir les données
+                  })
+                  .catch(error => {
+                      console.error("Erreur :", error);
+                  });
+            } else {
+                alert("Veuillez entrer un ID à supprimer.");
             }
-        }).then(response => response.text())
-        .then(data => {
-            alert("Données envoyées avec succès !");
-        }).catch(error => {
-            console.error("Erreur :", error);
-        });
-    }
-</script>
+        }
+    </script>
+</body>
 </html>
