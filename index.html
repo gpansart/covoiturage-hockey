@@ -36,4 +36,35 @@
             });
     }
 </script>
+<form onsubmit="submitForm(event)">
+    Nom du parent : <input type="text" name="parent" id="parent"><br>
+    Numéro de téléphone : <input type="text" name="telephone" id="telephone"><br>
+    Nombre de places disponibles : <input type="number" name="places" id="places"><br>
+    Commentaires : <input type="text" name="commentaires" id="commentaires"><br>
+    <input type="submit" value="Soumettre">
+</form>
+
+<script>
+    function submitForm(event) {
+        event.preventDefault();
+
+        let parent = document.getElementById('parent').value;
+        let telephone = document.getElementById('telephone').value;
+        let places = document.getElementById('places').value;
+        let commentaires = document.getElementById('commentaires').value;
+
+        fetch("VOTRE_SCRIPT_GOOGLE_APPS_URL", {
+            method: "POST",
+            body: JSON.stringify({ parent, telephone, places, commentaires }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(response => response.text())
+        .then(data => {
+            alert("Données envoyées avec succès !");
+        }).catch(error => {
+            console.error("Erreur :", error);
+        });
+    }
+</script>
 </html>
