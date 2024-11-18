@@ -2,27 +2,70 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Covoiturage Hockey</title>
     <style>
+        body {
+            background-color: #2b2b2b;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #ffffff;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
+
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #444;
         }
+
         th, td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #3a3a3a;
         }
+
+        tr:nth-child(even) {
+            background-color: #3a3a3a;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #2b2b2b;
+        }
+
+        input[type="text"], input[type="submit"], button {
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #444;
+            color: #e0e0e0;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #555;
+        }
+
     </style>
 </head>
 <body>
     <h1>Organisation du covoiturage - Hockey</h1>
-    <button onclick="fetchData()">Afficher la liste des joueurs</button>
     <div id="dataContainer">
         <table id="playersTable">
             <thead>
@@ -56,6 +99,11 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ1UUKHSlEYpsP9XbpaoAIEMmbCJHbXQwAl0gK2ehutCx-Tu5jPCOgIkbSg1MkFOA5kQ/exec";
+
+        // Charger les données dès l'ouverture de la page
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchData();
+        });
 
         function fetchData() {
             fetch(SCRIPT_URL)
