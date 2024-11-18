@@ -15,3 +15,24 @@
     </form>
 </body>
 </html>
+<button onclick="fetchData()">Voir la liste des joueurs</button>
+<div id="dataContainer"></div>
+
+<script>
+    function fetchData() {
+        fetch("VOTRE_SCRIPT_GOOGLE_APPS_URL")
+            .then(response => response.json())
+            .then(data => {
+                let container = document.getElementById("dataContainer");
+                container.innerHTML = "";
+                data.forEach(item => {
+                    container.innerHTML += `
+                        <p>Équipe: ${item.equipe}, Joueur: ${item.joueur}, Parent: ${item.parent}, Téléphone: ${item.telephone}</p>
+                    `;
+                });
+            })
+            .catch(error => {
+                console.error("Erreur :", error);
+            });
+    }
+</script>
