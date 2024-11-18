@@ -3,11 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Covoiturage Hockey</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h1>Organisation du covoiturage - Hockey</h1>
     <button onclick="fetchData()">Afficher la liste des joueurs</button>
-    <div id="dataContainer"></div>
+    <div id="dataContainer">
+        <table id="playersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Équipe</th>
+                    <th>Joueur</th>
+                    <th>Parent</th>
+                    <th>Téléphone</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Les données des joueurs seront insérées ici -->
+            </tbody>
+        </table>
+    </div>
 
     <h2>Ajouter / Modifier un Joueur</h2>
     <form onsubmit="handleFormSubmit(event)">
@@ -30,12 +61,20 @@
             fetch(SCRIPT_URL)
                 .then(response => response.json())
                 .then(data => {
-                    let container = document.getElementById("dataContainer");
-                    container.innerHTML = "";
+                    let tableBody = document.getElementById("tableBody");
+                    tableBody.innerHTML = ""; // Vider le tableau avant de le remplir
+
                     data.forEach(item => {
-                        container.innerHTML += `
-                            <p>ID: ${item.id}, Équipe: ${item.equipe}, Joueur: ${item.joueur}, Parent: ${item.parent}, Téléphone: ${item.telephone}</p>
+                        let row = `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.equipe}</td>
+                                <td>${item.joueur}</td>
+                                <td>${item.parent}</td>
+                                <td>${item.telephone}</td>
+                            </tr>
                         `;
+                        tableBody.innerHTML += row;
                     });
                 })
                 .catch(error => {
